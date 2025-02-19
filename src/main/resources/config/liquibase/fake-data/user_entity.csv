@@ -1,0 +1,11 @@
+id;created_at;updated_at;deleted;deleted_at;nom;prenom;email;password;role
+1;2025-02-17T19:42:00;2025-02-17T16:08:39;true;2025-02-17T05:05:12;porte-parole atchoum;pourpre antique;Aphelie_Guyot@gmail.com;blablabla émérite;ADMIN
+2;2025-02-17T09:12:37;2025-02-17T05:21:34;false;2025-02-17T14:29:44;adversaire;population du Québec timide;Alois.Perez@gmail.com;en decà de juriste crac;ADMIN
+3;2025-02-17T05:04:29;2025-02-17T14:36:36;true;2025-02-17T06:38:48;au-dessous tic-tac puisque;moderne ah;Isabeau_Renard@yahoo.fr;après;USER
+4;2025-02-17T19:56:19;2025-02-17T07:58:04;false;2025-02-17T12:14:43;parce que candide reculer;cadre peut-être toc;Prosper_Hubert@yahoo.fr;bè;ADMIN
+5;2025-02-17T02:03:45;2025-02-16T23:58:11;false;2025-02-17T00:56:09;autrement;vouh ha ha;Beranger_Fabre39@gmail.com;du fait que entre même si;USER
+6;2025-02-17T08:53:54;2025-02-16T23:59:19;false;2025-02-17T03:13:46;innombrable;tantôt que terne;Alcidie23@hotmail.fr;membre à vie;ADMIN
+7;2025-02-17T20:26:19;2025-02-17T08:38:30;true;2025-02-17T11:12:35;raide;de par remplir splendide;Carine4@gmail.com;puisque;ADMIN
+8;2025-02-17T17:30:41;2025-02-17T12:31:57;false;2025-02-17T18:15:55;personnel professionnel;jeune antagoniste;Nathalie.Mathieu@gmail.com;méditer;USER
+9;2025-02-17T03:59:45;2025-02-17T14:56:14;false;2025-02-17T08:19:46;hé;atchoum jusque;Benoit_Aubry64@gmail.com;vide;USER
+10;2025-02-17T13:25:37;2025-02-17T16:46:15;false;2025-02-17T02:45:19;de manière à ce que puisque;soulever;Clarisse.Perrot87@yahoo.fr;détecter reproduire;ADMIN
