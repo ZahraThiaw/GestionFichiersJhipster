@@ -186,6 +186,20 @@ spring:
     ansi:
       console-available: true
 
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  web:
+    resources:
+      static-locations:
+        - classpath:/static/
+        - classpath:/public/
+        - classpath:/META-INF/resources/
+
 server:
   servlet:
     session:
@@ -246,3 +260,16 @@ jhipster:
 # ===================================================================
 
 # application:
+
+file:
+  upload-dir: ./uploads
+  upload:
+    allowed-content-types:
+      - image/jpeg
+      - image/png
+      - image/gif
+      - application/pdf
+      - application/msword
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    max-file-size: 10000000
+

@@ -2,6 +2,7 @@ package sn.zahra.service;
 
 import java.util.Optional;
 import sn.zahra.service.dto.FileEntityDTO;
+import sn.zahra.service.dto.FileRequestDTO;
 
 /**
  * Service Interface for managing {@link sn.zahra.domain.FileEntity}.
@@ -10,10 +11,10 @@ public interface FileEntityService {
     /**
      * Save a fileEntity.
      *
-     * @param fileEntityDTO the entity to save.
+     * @param fileRequestDTO the entity to save.
      * @return the persisted entity.
      */
-    FileEntityDTO save(FileEntityDTO fileEntityDTO);
+    FileEntityDTO save(FileRequestDTO fileRequestDTO);
 
     /**
      * Updates a fileEntity.

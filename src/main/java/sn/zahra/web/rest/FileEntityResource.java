@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,6 +20,7 @@ import sn.zahra.service.FileEntityQueryService;
 import sn.zahra.service.FileEntityService;
 import sn.zahra.service.criteria.FileEntityCriteria;
 import sn.zahra.service.dto.FileEntityDTO;
+import sn.zahra.service.dto.FileRequestDTO;
 import sn.zahra.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -57,21 +59,37 @@ public class FileEntityResource {
     /**
      * {@code POST  /file-entities} : Create a new fileEntity.
      *
-     * @param fileEntityDTO the fileEntityDTO to create.
+     * @param fileRequestDTO the fileRequestDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new fileEntityDTO, or with status {@code 400 (Bad Request)} if the fileEntity has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("")
-    public ResponseEntity<FileEntityDTO> createFileEntity(@RequestBody FileEntityDTO fileEntityDTO) throws URISyntaxException {
-        LOG.debug("REST request to save FileEntity : {}", fileEntityDTO);
-        if (fileEntityDTO.getId() != null) {
-            throw new BadRequestAlertException("A new fileEntity cannot already have an ID", ENTITY_NAME, "idexists");
+//    @PostMapping("")
+//    public ResponseEntity<FileEntityDTO> createFileEntity(@RequestBody FileEntityDTO fileEntityDTO) throws URISyntaxException {
+//        LOG.debug("REST request to save FileEntity : {}", fileEntityDTO);
+//        if (fileEntityDTO.getId() != null) {
+//            throw new BadRequestAlertException("A new fileEntity cannot already have an ID", ENTITY_NAME, "idexists");
+//        }
+//        fileEntityDTO = fileEntityService.save(fileEntityDTO);
+//        return ResponseEntity.created(new URI("/api/file-entities/" + fileEntityDTO.getId()))
+//            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, fileEntityDTO.getId().toString()))
+//            .body(fileEntityDTO);
+//    }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<FileEntityDTO> createFileEntity(@ModelAttribute FileRequestDTO fileRequestDTO) throws URISyntaxException {
+        LOG.debug("REST request to upload FileEntity : {}", fileRequestDTO);
+
+        if (fileRequestDTO.getFile().isEmpty()) {
+            throw new BadRequestAlertException("File must not be empty", ENTITY_NAME, "filenotprovided");
         }
-        fileEntityDTO = fileEntityService.save(fileEntityDTO);
-        return ResponseEntity.created(new URI("/api/file-entities/" + fileEntityDTO.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, fileEntityDTO.getId().toString()))
-            .body(fileEntityDTO);
+
+        FileEntityDTO savedFile = fileEntityService.save(fileRequestDTO);
+
+        return ResponseEntity.created(new URI("/api/file-entities/" + savedFile.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, savedFile.getId().toString()))
+            .body(savedFile);
     }
+
 
     /**
      * {@code PUT  /file-entities/:id} : Updates an existing fileEntity.
