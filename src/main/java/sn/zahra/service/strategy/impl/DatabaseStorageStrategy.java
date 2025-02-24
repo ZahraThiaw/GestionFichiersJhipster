@@ -30,11 +30,13 @@ public class DatabaseStorageStrategy implements StorageStrategy {
             String fileName = nameWithoutExtension + "_" + UUID.randomUUID().toString() + "." + fileExtension;
 
             fileEntity.setFileData(file.getBytes());
+            fileEntity.setFileDataContentType(file.getContentType());
             fileEntity.setStorageType(StorageType.DATABASE);
             fileEntity.setFileName(fileName);
             fileEntity.setOriginalFileName(originalFileName);
             fileEntity.setContentType(file.getContentType());
             fileEntity.setFileSize(file.getSize());
+            fileEntity.setDeleted(false);
 
             fileRepository.save(fileEntity);
         } catch (IOException e) {

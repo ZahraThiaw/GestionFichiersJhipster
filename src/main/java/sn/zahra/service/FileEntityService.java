@@ -16,6 +16,8 @@ public interface FileEntityService {
      */
     FileEntityDTO save(FileRequestDTO fileRequestDTO);
 
+    byte[] downloadFile(Long id);
+
     /**
      * Updates a fileEntity.
      *

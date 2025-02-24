@@ -49,11 +49,14 @@ public class LocalStorageStrategy implements StorageStrategy {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             fileEntity.setFilePath(fileName);
+            fileEntity.setFileData(file.getBytes());
+            fileEntity.setFileDataContentType(file.getContentType());
             fileEntity.setStorageType(StorageType.LOCAL);
             fileEntity.setFileName(fileName);
             fileEntity.setOriginalFileName(originalFileName);
             fileEntity.setContentType(file.getContentType());
             fileEntity.setFileSize(file.getSize());
+            fileEntity.setDeleted(false);
 
             fileRepository.save(fileEntity);
         } catch (IOException e) {
@@ -63,13 +66,7 @@ public class LocalStorageStrategy implements StorageStrategy {
 
     @Override
     public byte[] retrieve(FileEntity fileEntity) {
-        try {
-            Path filePath = Path.of(uploadDir, fileEntity.getFilePath());
-
-            return Files.readAllBytes(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read file", e);
-        }
+        return fileEntity.getFileData();
     }
 
     @Override

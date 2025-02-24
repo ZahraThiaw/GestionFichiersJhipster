@@ -8,9 +8,11 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import sn.zahra.service.FileEntityService;
 import sn.zahra.service.criteria.FileEntityCriteria;
 import sn.zahra.service.dto.FileEntityDTO;
 import sn.zahra.service.dto.FileRequestDTO;
+import sn.zahra.service.exception.BadRequestException;
 import sn.zahra.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -63,18 +66,6 @@ public class FileEntityResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new fileEntityDTO, or with status {@code 400 (Bad Request)} if the fileEntity has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-//    @PostMapping("")
-//    public ResponseEntity<FileEntityDTO> createFileEntity(@RequestBody FileEntityDTO fileEntityDTO) throws URISyntaxException {
-//        LOG.debug("REST request to save FileEntity : {}", fileEntityDTO);
-//        if (fileEntityDTO.getId() != null) {
-//            throw new BadRequestAlertException("A new fileEntity cannot already have an ID", ENTITY_NAME, "idexists");
-//        }
-//        fileEntityDTO = fileEntityService.save(fileEntityDTO);
-//        return ResponseEntity.created(new URI("/api/file-entities/" + fileEntityDTO.getId()))
-//            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, fileEntityDTO.getId().toString()))
-//            .body(fileEntityDTO);
-//    }
-
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FileEntityDTO> createFileEntity(@ModelAttribute FileRequestDTO fileRequestDTO) throws URISyntaxException {
         LOG.debug("REST request to upload FileEntity : {}", fileRequestDTO);
@@ -90,6 +81,31 @@ public class FileEntityResource {
             .body(savedFile);
     }
 
+    @GetMapping("/{id}/download")
+    public ResponseEntity<?> downloadFile(@PathVariable Long id) {
+        try {
+            // Télécharger le fichier via le service
+            byte[] fileData = fileEntityService.downloadFile(id);
+
+            // Créer une ressource à partir des données du fichier
+            ByteArrayResource resource = new ByteArrayResource(fileData);
+
+            // Renvoyer la ressource avec les bons en-têtes HTTP
+            return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"file_" + id + ".bin\"")
+                .body(resource);
+
+        } catch (BadRequestAlertException e) {
+            // Retourner une réponse avec une erreur 404 si le fichier n'est pas trouvé
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Fichier non trouvé");
+        } catch (BadRequestException e) {
+            // Retourner une réponse avec une erreur 500 si un problème de téléchargement survient
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erreur lors du téléchargement du fichier");
+        }
+    }
 
     /**
      * {@code PUT  /file-entities/:id} : Updates an existing fileEntity.

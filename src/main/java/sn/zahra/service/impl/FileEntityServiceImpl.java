@@ -11,6 +11,7 @@ import sn.zahra.repository.FileEntityRepository;
 import sn.zahra.service.FileEntityService;
 import sn.zahra.service.dto.FileEntityDTO;
 import sn.zahra.service.dto.FileRequestDTO;
+import sn.zahra.service.exception.ResourceNotFoundException;
 import sn.zahra.service.mapper.FileEntityMapper;
 import sn.zahra.service.mapper.FileRequestMapper;
 import sn.zahra.service.strategy.StorageStrategy;
@@ -42,14 +43,6 @@ public class FileEntityServiceImpl implements FileEntityService {
         this.fileValidator = new FileValidator(fileStorageConfig);
     }
 
-//    @Override
-//    public FileEntityDTO save(FileEntityDTO fileEntityDTO) {
-//        LOG.debug("Request to save FileEntity : {}", fileEntityDTO);
-//        FileEntity fileEntity = fileEntityMapper.toEntity(fileEntityDTO);
-//        fileEntity = fileEntityRepository.save(fileEntity);
-//        return fileEntityMapper.toDto(fileEntity);
-//    }
-
     @Override
     public FileEntityDTO save(FileRequestDTO fileRequestDTO) {
         LOG.debug("Request to save FileEntity : {}", fileRequestDTO);
@@ -65,6 +58,24 @@ public class FileEntityServiceImpl implements FileEntityService {
         strategy.store(fileRequestDTO.getFile(), fileEntity);
 
         return fileEntityMapper.toDto(fileEntity);
+    }
+
+    public byte[] downloadFile(Long fileId) {
+        // Récupérer l'entité de fichier depuis la base de données
+        FileEntity fileEntity = fileEntityRepository.findByIdAndDeletedFalse(fileId)
+            .orElseThrow(() -> new ResourceNotFoundException("Fichier non trouvé"));
+
+        // Récupérer la stratégie de stockage appropriée
+        StorageStrategy storageStrategy = storageStrategyFactory.getStrategy(fileEntity.getStorageType());
+
+        // Utiliser la stratégie de stockage pour récupérer le fichier
+        byte[] fileData = storageStrategy.retrieve(fileEntity);
+
+        if (fileData == null || fileData.length == 0) {
+            throw new ResourceNotFoundException("Erreur lors du téléchargement du fichier");
+        }
+
+        return fileData;
     }
 
     @Override
